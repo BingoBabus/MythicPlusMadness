@@ -24,6 +24,8 @@ NumberGroupsNeeded = NumMembersInChannel mod 5 (wow party size)
    - then the numbers of groups needed is the quotient + 1
  - else
    - quotient
+
+
  (example: 38 mod 5 = Quotient: 7, remainder:3. So 8 groups will be needed )
  
   
