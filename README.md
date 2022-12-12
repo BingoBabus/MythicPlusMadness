@@ -20,10 +20,10 @@ discord roles of
 the discord bot will look at all members and their roles in the channel parameter
 
 NumberGroupsNeeded = NumMembersInChannel mod 5 (wow party size) 
-if the mod remainder is > 0 
-  then the numbers of groups needed is the quotient + 1
-else
-  quotient
+ - if the mod remainder is > 0 
+   - then the numbers of groups needed is the quotient + 1
+ - else
+   - quotient
  (example: 38 mod 5 = Quotient: 7, remainder:3. So 8 groups will be needed )
  
   
