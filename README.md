@@ -30,6 +30,7 @@ NumberGroupsNeeded = NumMembersInChannel mod 5 (wow party size)
  
   
 make list of all members with members with pure tank, healer, or DPS role
+
 make list of all members with tank, healer, or dps role
  
 start filling in the groups with pure role members first, after those lists are empty use the members with hybrid roles
