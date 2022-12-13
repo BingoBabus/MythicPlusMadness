@@ -15,7 +15,7 @@ TOKEN = os.getenv("TOKEN")
 intents=discord.Intents.all()
 
 #Comman prefix is setup here, this is what you have to type to issue a command to the bot
-prefix = '!'
+prefix = '/'
 bot = commands.Bot(command_prefix=prefix, intents=intents)
 
 #Removed the help command to create a custom help guide
@@ -30,7 +30,7 @@ _defaultChannel = 'cream of the crop'
 
 @bot.command()
 @commands.has_permissions(manage_messages=True)
-async def rando(ctx, arg=_defaultChannel):
+async def Madness(ctx, arg=_defaultChannel):
     await ctx.channel.send(arg)
     channel = discord.utils.get(ctx.guild.channels, name=arg)
 
@@ -169,8 +169,7 @@ async def FillTank(Groups, sTanks, tanks, sHealers, healers, sDPS, dps, numberOf
 #Get List of Members with Role and in the Voice Channel
 async def GetRoleInChannel(role, channel, membersInChannel):
     rMembers = [m for m in role.members]
-    return rMembers
-    #return list(filter(lambda rMembers: rMembers in membersInChannel, rMembers))
+    return list(filter(lambda rMembers: rMembers in membersInChannel, rMembers))
 
 #Get list of members with ONLY the role
 async def GetSoloRoleMembers(membersWithRole, NotRoles):
