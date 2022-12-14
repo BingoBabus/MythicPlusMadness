@@ -15,7 +15,7 @@ TOKEN = os.getenv("TOKEN")
 intents=discord.Intents.all()
 
 #Comman prefix is setup here, this is what you have to type to issue a command to the bot
-prefix = '/'
+prefix = '!'
 bot = commands.Bot(command_prefix=prefix, intents=intents)
 
 #Removed the help command to create a custom help guide
@@ -31,19 +31,31 @@ _defaultChannel = 'cream of the crop'
 @bot.command()
 @commands.has_permissions(manage_messages=True)
 async def Madness(ctx, arg=_defaultChannel):
-    await ctx.channel.send(arg)
+
     channel = discord.utils.get(ctx.guild.channels, name=arg)
 
     if channel is not None:
 
-        membersInChannel = [m.name for m in channel.members] 
-        await ctx.channel.send("Channel Member Count: {0}".format(len(membersInChannel)))
-
+        membersInChannel = [m for m in channel.members] 
+        
         if membersInChannel == 0:
-            await message.channel.send('Hey, no one is in the {channel}!')
+            await ctx.channel.send('Hey, no one is in the {channel}!')
             return
 
-        await StartMythicPlusMadness(ctx, channel, membersInChannel)
+        MembersReadyForMadness = []
+        for member in membersInChannel:
+            if (get(member.roles, name=_roleTank) or 
+                get(member.roles, name=_roleHealer) or
+                get(member.roles, name=_roleDPS)):
+                MembersReadyForMadness.append(member)
+
+        if MembersReadyForMadness == 0:
+            await ctx.channel.send('Hey, no one has the role {_roleTank}, {_roleHealer}, or {roleDPS} in {channel}!')
+            return              
+
+        await ctx.channel.send("Members Ready For Madness: {0}".format(len(membersInChannel)))
+
+        await StartMythicPlusMadness(ctx, channel, MembersReadyForMadness)
 
     else:
         print("Not Found: {0}".format(channel))
@@ -55,16 +67,20 @@ async def Madness(ctx, arg=_defaultChannel):
 async def CheckGroupBalance(ctx, Groups):
 
     #Find groups of <=2 players
-    for x in filter(lambda y: len(y) <= 2, Groups):
+    for x in filter(lambda y: len(y) <= 2 and len(y) > 0, Groups):
 
         #Fill small group by stealing players from filled groups until at least 3 members
         while True:
             filledGroups = next(filter(lambda y: len(y) > 3, Groups), None)
-            first = next(filter(lambda y: y.__contains__("[D]"), filledGroups), None)
-            x.append(first)
-            filledGroups.remove(first)
 
-            if len(x) > 2:
+            if (filledGroups is not None):
+                first = next(filter(lambda y: y.__contains__("[D]"), filledGroups), None)
+                x.append(first)
+                filledGroups.remove(first)
+
+                if len(x) > 2:
+                    break
+            else:
                 break
         
 #Fill Groups with Tanks, Healers, and DPS
@@ -91,7 +107,8 @@ async def CreateMythicPlusGroups(ctx, sTanks, tanks, sHealers, healers, sDPS, dp
             if groupNum == numberOfGroups: 
                 groupNum = 0
 
-    await CheckGroupBalance(ctx, Groups)
+    if(len(Groups) > 1):
+        await CheckGroupBalance(ctx, Groups)
 
     await OutputGroups(ctx, Groups)
     await ctx.send("Good Luck and Have Fun :P")
@@ -111,7 +128,7 @@ async def DetermineNumberOfGroups(ctx, membersInChannel):
     else:
         numGroups = leftOverMembers[0] + 1
     
-    #await ctx.send(f"We will have {numGroups} groups")
+    # await ctx.send(f"We will have {numGroups} groups")
     # await ctx.send(f"We will need {numGroups} tanks")
     # await ctx.send(f"We will need {numGroups} healers")
     # await ctx.send(f"We will need {numGroups * 3 } dps")
@@ -167,9 +184,14 @@ async def FillTank(Groups, sTanks, tanks, sHealers, healers, sDPS, dps, numberOf
         Groups.append(Group)
 
 #Get List of Members with Role and in the Voice Channel
-async def GetRoleInChannel(role, channel, membersInChannel):
+async def GetRoleInChannel(ctx, role, channel, membersInChannel):
     rMembers = [m for m in role.members]
-    return list(filter(lambda rMembers: rMembers in membersInChannel, rMembers))
+    rMembersInChannel = []
+
+    if(len(rMembers) > 0):
+        rMembersInChannel = list(filter(lambda rMembers: rMembers in membersInChannel, rMembers))
+
+    return rMembersInChannel
 
 #Get list of members with ONLY the role
 async def GetSoloRoleMembers(membersWithRole, NotRoles):
@@ -186,16 +208,19 @@ async def GetVoiceChannel(voiceChannels):
 async def OutputGroups(ctx, Groups):
     voiceChannels = ctx.guild.voice_channels
 
-    length_lst = [len(item) for row in Groups for item in row]
-    col_wdth = max(length_lst)
+    if(len(Groups) > 0):
+        length_lst = [len(item) for row in Groups for item in row]
 
-    i=1
-    for row in Groups:    
-        voiceChannel = await GetVoiceChannel(voiceChannels)    
+        if(len(length_lst) > 0):
+            col_wdth = max(length_lst)
 
-        await ctx.channel.send(f"G[{i}][<#{voiceChannel.id}>]: {''.join(item.ljust(col_wdth + 2) for item in row)}")
-        voiceChannels.remove(voiceChannel)
-        i = i + 1
+            i=1
+            for row in Groups:    
+                voiceChannel = await GetVoiceChannel(voiceChannels)    
+
+                await ctx.channel.send(f"G[{i}][<#{voiceChannel.id}>]: {''.join(item.ljust(col_wdth + 2) for item in row)}")
+                voiceChannels.remove(voiceChannel)
+                i = i + 1
 
 #When a member is assigned remove them from all remaining role pools
 async def RemoveMemberFromSelection(member, sTanks, tanks, sHealers, healers, sDPS, dps):
@@ -220,9 +245,9 @@ async def StartMythicPlusMadness(ctx, channel, membersInChannel):
     if rDPS is None:
         await ctx.channel.send("There is no {0} role on this server!".format(_roleDPS))
     
-    tanks = await GetRoleInChannel(rTank, channel, membersInChannel)
-    healers = await GetRoleInChannel(rHealer, channel, membersInChannel)
-    dps = await GetRoleInChannel(rDPS, channel, membersInChannel)
+    tanks = await GetRoleInChannel(ctx, rTank, channel, membersInChannel)
+    healers = await GetRoleInChannel(ctx, rHealer, channel, membersInChannel)
+    dps = await GetRoleInChannel(ctx, rDPS, channel, membersInChannel)
 
     sTanks = await GetSoloRoleMembers(tanks, [rDPS.name, rHealer.name])
     sHealers = await GetSoloRoleMembers(healers, [rDPS.name, rTank.name])
