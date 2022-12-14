@@ -38,8 +38,8 @@ async def Madness(ctx, arg=_defaultChannel):
 
         membersInChannel = [m for m in channel.members] 
         
-        if membersInChannel == 0:
-            await ctx.channel.send('Hey, no one is in the {channel}!')
+        if len(membersInChannel) == 0:
+            await ctx.channel.send(f"Hey, no one is in the {channel}!")
             return
 
         MembersReadyForMadness = []
@@ -49,11 +49,11 @@ async def Madness(ctx, arg=_defaultChannel):
                 get(member.roles, name=_roleDPS)):
                 MembersReadyForMadness.append(member)
 
-        if MembersReadyForMadness == 0:
-            await ctx.channel.send('Hey, no one has the role {_roleTank}, {_roleHealer}, or {roleDPS} in {channel}!')
+        if len(MembersReadyForMadness) == 0:
+            await ctx.channel.send(f"Hey, no one has the role {_roleTank}, {_roleHealer}, or {_roleDPS} in channel: {channel}!")
             return              
 
-        await ctx.channel.send("Members Ready For Madness: {0}".format(len(membersInChannel)))
+        await ctx.channel.send("Members Ready For Madness: {0}".format(len(MembersReadyForMadness)))
 
         await StartMythicPlusMadness(ctx, channel, MembersReadyForMadness)
 
