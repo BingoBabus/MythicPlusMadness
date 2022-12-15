@@ -3,7 +3,6 @@ Randomize a voice channel members list by role into MMO groups
 
 Made By: Bingo Babus
 
-#
 ## Command
 /madness [channel] 
 
@@ -49,7 +48,6 @@ The bot isn't perfect and sometimes players are not assigned due to the ratio of
 
 If a member is in voice channel and missing a tank/healer/dps role then they will be listed out and directed to the roles channel
 
-#
 ## Installation Guide
 
 - Have python 3 installed
