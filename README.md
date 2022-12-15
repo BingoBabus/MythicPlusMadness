@@ -54,4 +54,6 @@ If a member is in voice channel and missing a tank/healer/dps role then they wil
 - get a discord token from your bot via https://discord.com/developers/applications
 - get the guild id of your server. You can do this with developer mode enabled and right clicking on your server name then selecting copy id
 - fill in the token and guild id value in the .env file
+- put the file path to the python script into the .bat file
+- run bat and prepare for madness
 
