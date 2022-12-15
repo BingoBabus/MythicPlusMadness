@@ -5,19 +5,25 @@ Made By: Bingo Babus
 
 #
 ## Command
-!rando [channel-name] 
-
-default channel name is currently "cream of the crop"
+/madness [channel] 
 
 This is made for World of Warcraft Mythic Plus Groups. 
 
-Requirement 
-discord roles of 
+Discord Requirements:
+roles
  - tank
  - healer
  - dps
  
-the discord bot will look at all members and their roles in the channel parameter
+emoji
+ - Tank
+ - Healer
+ - DPS
+ 
+ Channel
+  - roles
+ 
+the discord bot will look at all members and their roles in the voice channel
 
 NumberGroupsNeeded = NumMembersInChannel mod 5 (wow party size) 
  - if the mod remainder is > 0 
@@ -39,11 +45,15 @@ after all members have been assigned then check the balance of the groups. If an
 
 each group will be assigned a random channel to join while they run the dungeon
 
+The bot isn't perfect and sometimes players are not assigned due to the ratio of member roles. Those players will be listed at the end with an Opps! message. Some manual assignment will be needed for them
+
+If a member is in voice channel and missing a tank/healer/dps role then they will be listed out and directed to the roles channel
+
 #
 ## Installation Guide
 
-- uhh, I kind of forget :P 
 - Have python 3 installed
 - get a discord token from your bot via https://discord.com/developers/applications
-- fill in the token value in the .env file
+- get the guild id of your server. You can do this with developer mode enabled and right clicking on your server name then selecting copy id
+- fill in the token and guild id value in the .env file
 
