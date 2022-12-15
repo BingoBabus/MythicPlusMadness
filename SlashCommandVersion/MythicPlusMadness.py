@@ -101,10 +101,10 @@ async def BeginMythicPlusMadness(interaction: discord.Interaction, channel: disc
     await interaction.channel.send(f"Players in channel [<#{channel.id}>] Ready for Madness: {len(MembersReadyForMadness)}")
 
     numGroups = await DetermineNumberOfGroups(MembersReadyForMadness)
-
-    await TellPeopleToGetRoles(interaction, MembersInVoiceWhoNeedRoles)
     
     await CreateGroups(interaction, numGroups, TANKS, PURE_TANKS, HEALERS, PURE_HEALERS, DPS, PURE_DPS)     
+    
+    await TellPeopleToGetRoles(interaction, MembersInVoiceWhoNeedRoles)
 
 
 #Fill Groups with Tanks, Healers, and DPS
