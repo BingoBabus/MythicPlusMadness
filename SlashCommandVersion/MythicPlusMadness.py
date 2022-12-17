@@ -43,7 +43,7 @@ client = MyClient(intents=discord.Intents.all())
 #------------------------------------------------Commands------------------------------------------------------#
 
 @client.tree.command()
-async def madness(interaction: discord.Interaction, channel: discord.VoiceChannel):
+async def madness(interaction: discord.Interaction, channel: discord.TextChannel):
     if channel is not None:
         await interaction.response.send_message(f"Good Luck and Have Fun :P {interaction.user.mention}")
         await BeginMythicPlusMadness(interaction, channel)
@@ -53,7 +53,7 @@ async def madness(interaction: discord.Interaction, channel: discord.VoiceChanne
 
 #-----------------------------------------Functions---------------------------------------------------------------#
 
-async def BeginMythicPlusMadness(interaction: discord.Interaction, channel: discord.VoiceChannel):
+async def BeginMythicPlusMadness(interaction: discord.Interaction, channel: discord.TextChannel):
     
     #Get each role
     ROLE_TANK = discord.utils.get(interaction.guild.roles, name=ROLE_NAME_TANK)
@@ -115,6 +115,9 @@ async def CreateGroups(interaction: discord.Interaction, numGroups, TANKS, PURE_
     TankEmoji = discord.utils.get(interaction.guild.emojis, name=EMOJI_NAME_TANK)
     HealerEmoji = discord.utils.get(interaction.guild.emojis, name=EMOJI_NAME_HEALER)
     DPSEmoji = discord.utils.get(interaction.guild.emojis, name=EMOJI_NAME_DPS)
+
+    for x in range(numGroups):
+        Groups.append([])
 
     await FillTank(Groups, numGroups, TANKS, PURE_TANKS, HEALERS, PURE_HEALERS, DPS, PURE_DPS, TankEmoji)
     await FillHealer(Groups, TANKS, PURE_TANKS, HEALERS, PURE_HEALERS, DPS, PURE_DPS, HealerEmoji)
@@ -215,20 +218,23 @@ async def FillDPS(Groups, numGroups, TANKS, PURE_TANKS, HEALERS, PURE_HEALERS, D
     for x in range(len(DPS)):
         Group = Groups[groupNum]
 
-        if len(PURE_DPS) > 0:
-            random.shuffle(PURE_DPS)
-            print(f"pure dps assigned: {PURE_DPS[0].name} to Group {groupNum  + 1}")
-            Group.append(f"{DPSEmoji} {PURE_DPS[0].mention}")        
+        count = sum(map(lambda x : x.__contains__(f"{DPSEmoji}"), Group))
+        if(count<3):
 
-            await RemoveMemberFromSelection(PURE_DPS[0], TANKS, PURE_TANKS, HEALERS, PURE_HEALERS, DPS, PURE_DPS)
-        elif len(DPS) > 0:
-            random.shuffle(DPS)
-            print(f" dps assigned: {DPS[0].name} to Group {groupNum  + 1}")
-            Group.append(f"{DPSEmoji} {DPS[0].mention}")        
+            if len(PURE_DPS) > 0:
+                random.shuffle(PURE_DPS)
+                print(f"pure dps assigned: {PURE_DPS[0].name} to Group {groupNum  + 1}")
+                Group.append(f"{DPSEmoji} {PURE_DPS[0].mention}")        
 
-            await RemoveMemberFromSelection(DPS[0], TANKS, PURE_TANKS, HEALERS, PURE_HEALERS, DPS, PURE_DPS)
-        else:
-            break
+                await RemoveMemberFromSelection(PURE_DPS[0], TANKS, PURE_TANKS, HEALERS, PURE_HEALERS, DPS, PURE_DPS)
+            elif len(DPS) > 0:
+                random.shuffle(DPS)
+                print(f" dps assigned: {DPS[0].name} to Group {groupNum  + 1}")
+                Group.append(f"{DPSEmoji} {DPS[0].mention}")        
+
+                await RemoveMemberFromSelection(DPS[0], TANKS, PURE_TANKS, HEALERS, PURE_HEALERS, DPS, PURE_DPS)
+            else:
+                break
 
         groupNum+=1
         if groupNum == numGroups: 
@@ -248,24 +254,26 @@ async def FillHealer(Groups, TANKS, PURE_TANKS, HEALERS, PURE_HEALERS, DPS, PURE
             Group.append(f"{HealerEmoji} {HEALERS[0].mention}")        
             
             await RemoveMemberFromSelection(HEALERS[0], TANKS, PURE_TANKS, HEALERS, PURE_HEALERS, DPS, PURE_DPS)
+        else:
+            return
 
 async def FillTank(Groups, numGroups, TANKS, PURE_TANKS, HEALERS, PURE_HEALERS, DPS, PURE_DPS, TankEmoji: discord.Emoji):
-    for x in range(numGroups):
-        Group = []
+    for Group in Groups:
         if len(PURE_TANKS) > 0:
             random.shuffle(PURE_TANKS)
-            print(f"pure tank assigned: {PURE_TANKS[0].name} to Group {x + 1}")
+            print(f"pure tank assigned: {PURE_TANKS[0].name} to Group {Groups.index(Group) + 1}")
             Group.append(f"{TankEmoji} {PURE_TANKS[0].mention}")     
             
             await RemoveMemberFromSelection(PURE_TANKS[0], TANKS, PURE_TANKS, HEALERS, PURE_HEALERS, DPS, PURE_DPS)
         elif len(TANKS) > 0:
             random.shuffle(TANKS)
-            print(f" tank assigned: {TANKS[0].name} to Group {x + 1}")
+            print(f" tank assigned: {TANKS[0].name} to Group {Groups.index(Group) + 1}")
             Group.append(f"{TankEmoji}  {TANKS[0].mention}")        
 
             await RemoveMemberFromSelection(TANKS[0], TANKS, PURE_TANKS, HEALERS, PURE_HEALERS, DPS, PURE_DPS)
+        else:
+            return
 
-        Groups.append(Group)
                 
 async def RemoveMemberFromSelection(member,  TANKS, PURE_TANKS, HEALERS, PURE_HEALERS, DPS, PURE_DPS):
         if member in TANKS: TANKS.remove(member)
