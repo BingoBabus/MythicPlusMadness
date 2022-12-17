@@ -43,7 +43,7 @@ client = MyClient(intents=discord.Intents.all())
 #------------------------------------------------Commands------------------------------------------------------#
 
 @client.tree.command()
-async def madness(interaction: discord.Interaction, channel: discord.TextChannel):
+async def madness(interaction: discord.Interaction, channel: discord.VoiceChannel):
     if channel is not None:
         await interaction.response.send_message(f"Good Luck and Have Fun :P {interaction.user.mention}")
         await BeginMythicPlusMadness(interaction, channel)
@@ -53,7 +53,7 @@ async def madness(interaction: discord.Interaction, channel: discord.TextChannel
 
 #-----------------------------------------Functions---------------------------------------------------------------#
 
-async def BeginMythicPlusMadness(interaction: discord.Interaction, channel: discord.TextChannel):
+async def BeginMythicPlusMadness(interaction: discord.Interaction, channel: discord.VoiceChannel):
     
     #Get each role
     ROLE_TANK = discord.utils.get(interaction.guild.roles, name=ROLE_NAME_TANK)
