@@ -1,10 +1,10 @@
 # MythicPlusMadness
-Randomize a voice channel members list by role into MMO groups
+Randomize discord members in a voice channel into MMO Groups based on their role in discord
 
 Made By: Bingo Babus
 
 ## Command
-/madness [channel] 
+/madness [voice_channel] 
 
 This is made for World of Warcraft Mythic Plus Groups. 
 
@@ -33,18 +33,15 @@ NumberGroupsNeeded = NumMembersInChannel mod 5 (wow party size)
 
  (example: 38 mod 5 = Quotient: 7, remainder:3. So 8 groups will be needed )
  
-  
-make list of all members with members with pure tank, healer, or DPS role
-
-make list of all members with tank, healer, or dps role
+start assigning Tanks, then healers, than DPS. Members with only one role will be prioritized first. Depending of the pools of roles available. Some players might not get assigned. So create new groups, filling in the roles needed until all players have a group.
  
-start filling in the groups with pure role members first, after those lists are empty use the members with hybrid roles
-
-after all members have been assigned then check the balance of the groups. If any group has 2 or less players then even out the groups until all groups have at least 3 members
+after all members have been assigned then check the balance of the groups. 
+If any group has 2 or less players then even out the groups until all groups have at least 3 members
+If any group has a Tank + Healer and another group has neither then remove the tank and add it to that group
 
 each group will be assigned a random channel to join while they run the dungeon
 
-The bot isn't perfect and sometimes players are not assigned due to the ratio of member roles. Those players will be listed at the end with an Opps! message. Some manual assignment will be needed for them
+The bot isn't perfect let me know if you run into bugs!
 
 If a member is in voice channel and missing a tank/healer/dps role then they will be listed out and directed to the roles channel
 
