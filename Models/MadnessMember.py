@@ -12,6 +12,6 @@ class MadnessMember:
         self.Roles = Roles
 
     def ToString(self):
-        return f"{self.MythicMember.mention}[{' '.join([m for m in self.Roles])}]"
+        return f"{self.MythicMember.mention}"
 
     
