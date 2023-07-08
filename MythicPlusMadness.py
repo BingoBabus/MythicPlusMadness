@@ -56,6 +56,22 @@ async def madness(interaction: discord.Interaction, channel: discord.VoiceChanne
     else:
         await interaction.response.send_message(f"channel not found: {channel} {interaction.user.mention}")
 
+@client.tree.command()
+async def join(interaction: discord.Interaction, channel: discord.VoiceChannel):
+    if channel is not None:
+        await interaction.response.send_message(f"MythicPlus Time!")
+        await channel.connect()
+    else:
+        await interaction.response.send_message(f"channel not found: {channel} {interaction.user.mention}")
+
+@client.tree.command()
+async def leave(interaction: discord.Interaction, channel: discord.VoiceChannel):
+    if channel is not None and channel.guild.voice_client:
+        await interaction.response.send_message(f"AIGHT SEEYUH!")
+        await channel.guild.voice_client.disconnect()
+    else:
+        await interaction.response.send_message(f"channel not found: {channel} {interaction.user.mention}")
+
 #-----------------------------------------Functions---------------------------------------------------------------#
 
 async def BeginMythicPlusMadness(interaction: discord.Interaction, channel):
