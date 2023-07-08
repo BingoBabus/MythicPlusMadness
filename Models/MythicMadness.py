@@ -47,12 +47,12 @@ class MythicMadness:
         self.CreatePoolOfMembersInChannel(channel)
 
     def AssignGroupsVoiceChannel(self, Channels):
-        voiceChannels = Channels
+        voiceChannels = []
+        RemoveTheseChannels = ['afk']
 
-        for v in Channels:
-            if v.name.lower() == "afk":
-                voiceChannels.remove(v)
-                break
+         for v in Channels:
+            if(v.name.lower() in RemoveTheseChannels) == False:
+                voiceChannels.append(v)
 
         for group in self.MythicGroups:
 
